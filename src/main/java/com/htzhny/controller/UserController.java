@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fresh.service.UserService;
 import com.htzhny.dao.UserDao;
 import com.htzhny.entity.User;
+import com.htzhny.util.PageBean;
 
 /**
  * 用户控制器
@@ -37,17 +38,22 @@ public class UserController {
     @RequestMapping(value="login", method = RequestMethod.POST)
     public ModelAndView  login(User request,HttpSession session) {
     	log.info("开始登录验证");
-    	User user1 = new User(1, "wang", "3");
-    	User user = userService.login(user1);
-
-        if (user == null || !user.getUserPassword().equals(request.getUserPassword())) {
-            return new ModelAndView("redirect:/login.jsp");
-        } else {
-            session.setAttribute("user", user);
-            ModelAndView mav = new ModelAndView();
-            mav.setViewName("index");
-            return mav;
-        }
+    	ModelAndView mav1 = new ModelAndView();
+        mav1.setViewName("index");
+        PageBean<User> pageBean = userService.findByPage(1);
+        session.setAttribute("result", pageBean);
+        return mav1;
+//    	User user1 = new User("1", "wang", "3");
+//    	User user = userService.login(user1);
+//
+//        if (user == null || !user.getPassword().equals(request.getPassword())) {
+//            return new ModelAndView("redirect:/login.jsp");
+//        } else {
+//            session.setAttribute("user", user);
+//            ModelAndView mav = new ModelAndView();
+//            mav.setViewName("index");
+//            return mav;
+//        }
     }
     
 }

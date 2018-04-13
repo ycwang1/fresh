@@ -8,24 +8,23 @@
 		属性id：是这个映射标签的唯一标识 id标签是查询结果集中的唯一标识 属性column：查询出来的列名 属性property：是po类里所指定的列名 
 		通常会在原列名后面加下划线，这是固定的，这里就是id后面_ -->
 	<resultMap type="com.htzhny.entity.User" id="userinfoMap">
-		<result column="userId" property="userId" />
-		<result column="userName" property="userName" />
-		<result column="userPassword" property="userPassword" />
-		<result column="userPhone" property="userPhone" />
-		<result column="userType" property="userType" />
-		<result column="userImg" property="userImg" />
-		<result column="userIdType" property="userIdType" />
-		<result column="userIdCard" property="userIdCard" />
-		<result column="userBirthday" property="userBirthday" />
-		<result column="userCompany" property="userCompany" />
-		<result column="createTime" property="createTime" />
-		<result column="userLastLoginTime" property="userLastLoginTime" />
+		<result column="id" property="id" />
+		<result column="user_name" property="user_name" />
+		<result column="password" property="password" />
+		<result column="user_phone" property="user_phone" />
+		<result column="user_type" property="user_type" />
+		<result column="user_id_type" property="user_id_type" />
+		<result column="user_id_card" property="user_id_card" />
+		<result column="user_birthday" property="user_birthday" />
+		<result column="user_company" property="user_company" />
+		<result column="create_time" property="create_time" />
+		<result column="user_last_login_time" property="user_last_login_time" />
 		<result column="status" property="status" />
 	</resultMap>
 	<!-- ==================定义sql片段============== sql:是sql片段标签属性id是该片段的唯一标识 -->
 	<sql id="zd">
-		userid,userName,userPassword,userPhone,userType,userImg,userIdType,userIdCard,
-		userBirthday,userCompany,createTime,userLastLoginTime,status
+		id,user_name,password,user_phone,user_type,user_id_type,user_id_card,user_birthday,
+		user_company,create_time,user_last_login_time,status
 	</sql>
 	<!-- 增删改查标签里的id:一定要和接口里对应的方法名一致， resultMap输出类型里写映射标签里的id parameterType：输入类型，规范输入数据类型，指明查询时使用的参数类型 -->
 	<!-- 验证登录 -->
@@ -41,10 +40,22 @@
 		<!-- 用include标签引入sql片段，refid写定义sql片段的id，where标签不要写在片段里 -->
 		select
 		<include refid="zd" />
-		from freshuser
-		<where>userid=#{userid}</where>
+		from user
+		<where>id=#{userid}</where>
 	</select>
-
+	 <!-- 根据分页数据start 和size查询数据 -->
+    <select id="findByPage" parameterType="Map" resultMap="userinfoMap">
+        select
+        <include refid="zd" />
+        from user
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    <!-- 查询用户记录总数 -->
+    <select id="selectCount" resultType="int">
+        select count(*) from user
+    </select>
 	<!-- 修改用户信息 -->
 	<!-- <update id="update" parameterType="com.po.UserinfoPO"> update userinfo 
 		set loginname=#{loginname},loginpass=#{loginpass},username=#{username}, upower=#{upower},birthday=#{birthday},sex=#{sex} 
